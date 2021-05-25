@@ -79,7 +79,8 @@ export const login = async (req: Request, res: Response): Promise<Response> => {
 }
 
 export const getUsersByTokenId = async (req: Request, res: Response): Promise<Response> => {
-    const users = await getRepository(User).find();
+    console.log(req.userId)
+    const users = await getRepository(User).findOne(req.userId);
     return res.json(users);
 }
 

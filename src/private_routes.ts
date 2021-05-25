@@ -20,6 +20,17 @@ import jwt from 'jsonwebtoken'
 // declare a new router to include all the endpoints
 const router = Router();
 
+export interface IPayload {
+    user: {
+        id: number,
+        first_name: string,
+        last_name: string,
+        email: string,
+        password: string
+    }
+    iat: number;
+    exp: number
+}
 
 //middleware de verificación
 const verifyToken = (req: Request, res: Response, next: NextFunction) => {
@@ -27,8 +38,10 @@ const verifyToken = (req: Request, res: Response, next: NextFunction) => {
     const token = req.header('Authorization');
     if (!token) return res.status(400).json('ACCESS DENIED');
     try {
-        const decoded = jwt.verify(token as string, process.env.JWT_KEY as string)
-        req.user = decoded;
+        const decoded = jwt.verify(token as string, process.env.JWT_KEY as string) as IPayload
+        console.log(decoded)
+        //req.user = decoded;
+        req.userId = decoded.user.id
         next()
     } catch (error) {
         return res.status(400).json('ACCESS DENIED');
